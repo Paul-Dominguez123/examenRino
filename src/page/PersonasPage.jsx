@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { GetPersonas } from '../Apis/GetPersonas';
 import { PostPersonas } from '../Apis/PostPersonas';
 import { UpdatePersonas } from '../Apis/UpdatePersonas';
-import { DeletePersona } from '../Apis/DeletePersona';
 import { TablaPersonas } from '../components/TablaPersonas';
 import { FormPersona } from '../forms/FormPersona';
+import { DeletePersona } from '../apis/DeletePersona';
 
 export const PersonasPage = () => {
 
