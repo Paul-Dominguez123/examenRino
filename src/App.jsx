@@ -18,4 +18,6 @@ export default App
 
 const Div=styled.div`
   margin-top: 0px;
+  margin: 0;
+ 
 `;
