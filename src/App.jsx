@@ -1,20 +1,22 @@
-import styled from 'styled-components'
-import { PersonasPage } from './page/PersonasPage';
+import React from 'react';
+import styled from 'styled-components';
+import { BrowserRouter as Router } from 'react-router-dom';
+import Rutas from './routes/Routes'; 
+import MenuLayout from './menu/Menu'; 
 
-function App() {
-
+const App = () => {
   return (
-    <>
-      
-      <Div>
-        <PersonasPage/>
-        
-      </Div>
-    </>
-  )
-}
+    <Div>
+    <Router>
+      <MenuLayout>
+        <Rutas /> {}
+      </MenuLayout>
+    </Router>
+    </Div>
+  );
+};
 
-export default App
+export default App;
 
 const Div=styled.div`
   margin-top: 0px;

@@ -2,25 +2,25 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaSpinner } from 'react-icons/fa'; // Importar ícono de carga
 
-export const FormPersona = ({ personaInicial, onSubmit }) => {
-    const [persona, setPersona] = useState({
+export const FormProfesor = ({ profesorInicial, onSubmit }) => {
+    const [profesor, setProfesor] = useState({
         nombre: '',
         apellido: '',
-        carrera: ''
+        especialidad: ''
     });
 
     const [alerta, setAlerta] = useState(null); // Estado para mostrar alertas
     const [cargando, setCargando] = useState(false); // Estado para mostrar carga
 
     useEffect(() => {
-        if (personaInicial) {
-            setPersona(personaInicial);
+        if (profesorInicial) {
+            setProfesor(profesorInicial);
         }
-    }, [personaInicial]);
+    }, [profesorInicial]);
 
     const handleChange = (e) => {
-        setPersona({
-            ...persona,
+        setProfesor({
+            ...profesor,
             [e.target.name]: e.target.value
         });
     };
@@ -31,10 +31,10 @@ export const FormPersona = ({ personaInicial, onSubmit }) => {
         setCargando(true); // Mostrar indicador de carga
 
         // Verificar campos vacíos
-        if (!persona.nombre || !persona.apellido || !persona.carrera) {
+        if (!profesor.nombre || !profesor.apellido || !profesor.especialidad) {
             setAlerta({
                 tipo: 'error',
-                mensaje: `Faltan campos: ${!persona.nombre ? 'Nombre' : ''}${!persona.nombre && !persona.apellido ? ', ' : ''}${!persona.apellido ? 'Apellido' : ''}${(!persona.nombre || !persona.apellido) && !persona.carrera ? ', ' : ''}${!persona.carrera ? 'Carrera' : ''}.`
+                mensaje: `Faltan campos: ${!profesor.nombre ? 'Nombre' : ''}${!profesor.nombre && !profesor.apellido ? ', ' : ''}${!profesor.apellido ? 'Apellido' : ''}${(!profesor.nombre || !profesor.apellido) && !profesor.especialidad ? ', ' : ''}${!profesor.especialidad ? 'Especialidad' : ''}.`
             });
             setCargando(false); // Ocultar indicador de carga
             return;
@@ -49,7 +49,7 @@ export const FormPersona = ({ personaInicial, onSubmit }) => {
                 setCargando(false); // Ocultar indicador de carga
             }, 7000);
 
-            const respuesta = await onSubmit(persona);
+            const respuesta = await onSubmit(profesor);
 
             clearTimeout(timeout);
 
@@ -72,27 +72,27 @@ export const FormPersona = ({ personaInicial, onSubmit }) => {
 
     return (
         <FormContainer onSubmit={handleSubmit}>
-            <FormTitle>{personaInicial ? 'Editar Persona' : 'Agregar Persona'}</FormTitle>
+            <FormTitle>{profesorInicial ? 'Editar Profesor' : 'Agregar Profesor'}</FormTitle>
             <Input
                 type="text"
                 name="nombre"
-                value={persona.nombre}
+                value={profesor.nombre}
                 onChange={handleChange}
                 placeholder="Nombre"
             />
             <Input
                 type="text"
                 name="apellido"
-                value={persona.apellido}
+                value={profesor.apellido}
                 onChange={handleChange}
                 placeholder="Apellido"
             />
             <Input
                 type="text"
-                name="carrera"
-                value={persona.carrera}
+                name="especialidad"
+                value={profesor.especialidad}
                 onChange={handleChange}
-                placeholder="Carrera"
+                placeholder="Especialidad"
             />
             <Button type="submit" disabled={cargando}>
                 {cargando ? <FaSpinner className="spinner" /> : 'Guardar'}

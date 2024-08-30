@@ -1,79 +1,79 @@
 import React, { useEffect, useState } from 'react';
-import { GetPersonas } from '../Apis/Personas/GetPersonas';
-import { PostPersonas } from '../Apis/Personas/PostPersonas';
-import { UpdatePersonas } from '../Apis/Personas/UpdatePersonas';
-import { DeletePersona } from '../apis/Personas/DeletePersona';
-import { TablaPersonas } from '../components/TablaPersonas';
-import { FormPersona } from '../forms/FormPersona';
+import { GetAlumnos } from '../Apis/Alumnos/GetAlumnos';
+import { PostAlumnos } from '../Apis/Alumnos/PostAlumnos';
+import { UpdateAlumnos } from '../Apis/Alumnos/UpdateAlumnos';
+import { DeleteAlumnos } from '../Apis/Alumnos/DeleteAlumnos';
+import { TablaAlumno } from '../components/TablaAlumnos';
+import { FormAlumno } from '../forms/FormAlumno';
 import styled from 'styled-components';
 import { IoAddCircle } from 'react-icons/io5'; // Importa el ícono
 
-export const PersonasPage = () => {
-    const [personas, setPersonas] = useState([]);
+export const AlumnoPage = () => {
+    const [alumnos, setAlumnos] = useState([]);
     const [showModal, setShowModal] = useState(false);
-    const [personaEditando, setPersonaEditando] = useState(null);
+    const [alumnoEditando, setAlumnoEditando] = useState(null);
 
     useEffect(() => {
-        cargarPersonas();
+        cargarAlumnos();
     }, []);
 
-    const cargarPersonas = async () => {
+    const cargarAlumnos = async () => {
         try {
-            const data = await GetPersonas();
-            setPersonas(data);
+            const data = await GetAlumnos();
+            setAlumnos(data);
         } catch (error) {
-            console.error("Error loading personas:", error);
+            console.error("Error loading alumnos:", error);
         }
     };
 
-    const handleAddPersona = async (persona) => {
+    const handleAddAlumno = async (alumno) => {
         try {
-            await PostPersonas(persona);
+            await PostAlumnos(alumno);
             setShowModal(false);
-            cargarPersonas();
+            cargarAlumnos();
         } catch (error) {
-            console.error("Error adding persona:", error);
+            console.error("Error adding alumno:", error);
         }
     };
 
-    const handleUpdatePersona = async (persona) => {
+    const handleUpdateAlumno = async (alumno) => {
         try {
-            await UpdatePersonas(personaEditando.id, persona);
+            await UpdateAlumnos(alumnoEditando.id_alumno, alumno);
             setShowModal(false);
-            setPersonaEditando(null);
-            cargarPersonas();
+            setAlumnoEditando(null);
+            cargarAlumnos();
         } catch (error) {
-            console.error("Error updating persona:", error);
+            console.error("Error updating alumno:", error);
         }
     };
 
-    const handleDeletePersona = async (id) => {
+    const handleDeleteAlumno = async (id_alumno) => {
         try {
-            await DeletePersona(id);
-            cargarPersonas();
+            await DeleteAlumnos(id_alumno);
+            cargarAlumnos();
         } catch (error) {
-            console.error("Error deleting persona:", error);
+            console.error("Error deleting alumno:", error);
         }
     };
 
-    const handleEditClick = (persona) => {
-        setPersonaEditando(persona);
+    const handleEditClick = (alumno) => {
+        setAlumnoEditando(alumno);
         setShowModal(true);
     };
 
     const handleAddClick = () => {
-        setPersonaEditando(null);
+        setAlumnoEditando(null);
         setShowModal(true);
     };
 
     return (
         <Container>
-            <TablaPersonas personas={personas} onEdit={handleEditClick} onDelete={handleDeletePersona} />
+            <TablaAlumno alumnos={alumnos} onEdit={handleEditClick} onDelete={handleDeleteAlumno} />
             {showModal && (
                 <Modal>
-                    <FormPersona
-                        personaInicial={personaEditando}
-                        onSubmit={personaEditando ? handleUpdatePersona : handleAddPersona}
+                    <FormAlumno
+                        alumnoInicial={alumnoEditando}
+                        onSubmit={alumnoEditando ? handleUpdateAlumno : handleAddAlumno}
                     />
                     <CloseButton onClick={() => setShowModal(false)}>Cerrar</CloseButton>
                 </Modal>
@@ -85,7 +85,7 @@ export const PersonasPage = () => {
     );
 };
 
-export default PersonasPage;
+export default AlumnoPage;
 
 const Container = styled.div`
   display: flex;
@@ -94,7 +94,7 @@ const Container = styled.div`
 `;
 
 const AddButton = styled.button`
-  background-color: #20cc84; /* Color de fondo verde */
+  background-color: #20cc84;
   color: white;
   border: none;
   padding: 10px;
@@ -108,7 +108,7 @@ const AddButton = styled.button`
   justify-content: center;
   
   &:hover {
-    background-color: #19debc; /* Color de fondo verde claro al pasar el cursor */
+    background-color: #19debc;
   }
 
   svg {
@@ -128,7 +128,7 @@ const Modal = styled.div`
 `;
 
 const CloseButton = styled.button`
-  background-color: #e74c3c;
+  background-color: #21d98f;
   color: white;
   font-size: 16px;
   border: none;

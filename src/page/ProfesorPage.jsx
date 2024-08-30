@@ -1,79 +1,79 @@
 import React, { useEffect, useState } from 'react';
-import { GetPersonas } from '../Apis/Personas/GetPersonas';
-import { PostPersonas } from '../Apis/Personas/PostPersonas';
-import { UpdatePersonas } from '../Apis/Personas/UpdatePersonas';
-import { DeletePersona } from '../apis/Personas/DeletePersona';
-import { TablaPersonas } from '../components/TablaPersonas';
-import { FormPersona } from '../forms/FormPersona';
+import { GetProfesores } from '../Apis/Profesores/GetProfesor';
+import { PostProfesores } from '../Apis/Profesores/PostProfesor';
+import { UpdateProfesores } from '../Apis/Profesores/UpdateProfesor';
+import { DeleteProfesor } from '../Apis/Profesores/DeleteProfesor';
+import { TablaProfesor } from '../components/TablaProfesor';
+import { FormProfesor } from '../forms/FormProfesor';
 import styled from 'styled-components';
 import { IoAddCircle } from 'react-icons/io5'; // Importa el ícono
 
-export const PersonasPage = () => {
-    const [personas, setPersonas] = useState([]);
+export const ProfesorPage = () => {
+    const [profesores, setProfesores] = useState([]);
     const [showModal, setShowModal] = useState(false);
-    const [personaEditando, setPersonaEditando] = useState(null);
+    const [profesorEditando, setProfesorEditando] = useState(null);
 
     useEffect(() => {
-        cargarPersonas();
+        cargarProfesores();
     }, []);
 
-    const cargarPersonas = async () => {
+    const cargarProfesores = async () => {
         try {
-            const data = await GetPersonas();
-            setPersonas(data);
+            const data = await GetProfesores();
+            setProfesores(data);
         } catch (error) {
-            console.error("Error loading personas:", error);
+            console.error("Error loading profesores:", error);
         }
     };
 
-    const handleAddPersona = async (persona) => {
+    const handleAddProfesor = async (profesor) => {
         try {
-            await PostPersonas(persona);
+            await PostProfesores(profesor);
             setShowModal(false);
-            cargarPersonas();
+            cargarProfesores();
         } catch (error) {
-            console.error("Error adding persona:", error);
+            console.error("Error adding profesor:", error);
         }
     };
 
-    const handleUpdatePersona = async (persona) => {
+    const handleUpdateProfesor = async (profesor) => {
         try {
-            await UpdatePersonas(personaEditando.id, persona);
+            await UpdateProfesores(profesorEditando.id_profesor, profesor);
             setShowModal(false);
-            setPersonaEditando(null);
-            cargarPersonas();
+            setProfesorEditando(null);
+            cargarProfesores();
         } catch (error) {
-            console.error("Error updating persona:", error);
+            console.error("Error updating profesor:", error);
         }
     };
 
-    const handleDeletePersona = async (id) => {
+    const handleDeleteProfesor = async (id_profesor) => {
         try {
-            await DeletePersona(id);
-            cargarPersonas();
+            await DeleteProfesor(id_profesor);
+            cargarProfesores();
         } catch (error) {
-            console.error("Error deleting persona:", error);
+            console.error("Error deleting profesor:", error);
         }
     };
 
-    const handleEditClick = (persona) => {
-        setPersonaEditando(persona);
+    const handleEditClick = (profesor) => {
+        setProfesorEditando(profesor);
         setShowModal(true);
     };
 
     const handleAddClick = () => {
-        setPersonaEditando(null);
+        setProfesorEditando(null);
         setShowModal(true);
     };
 
     return (
         <Container>
-            <TablaPersonas personas={personas} onEdit={handleEditClick} onDelete={handleDeletePersona} />
+            <TablaProfesor profesores={profesores} onEdit={handleEditClick} onDelete={handleDeleteProfesor} />
             {showModal && (
                 <Modal>
-                    <FormPersona
-                        personaInicial={personaEditando}
-                        onSubmit={personaEditando ? handleUpdatePersona : handleAddPersona}
+                    <FormProfesor
+                        profesorInicial={profesorEditando}
+                        onSubmit={profesorEditando ? handleUpdateProfesor : handleAddProfesor}
                     />
                     <CloseButton onClick={() => setShowModal(false)}>Cerrar</CloseButton>
                 </Modal>
@@ -85,7 +85,7 @@ export const PersonasPage = () => {
     );
 };
 
-export default PersonasPage;
+export default ProfesorPage;
 
 const Container = styled.div`
   display: flex;
