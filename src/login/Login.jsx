@@ -1,20 +1,38 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import AuthContext from '../context/AuthContext';
+import {AuthContext} from './AuthContext';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
-  const handleLogin = () => {
-    if (username === 'Cristian' && password === 'Cristian2005_05') {
-      login();
-      navigate('/personas');
-    } else {
-      alert('Usuario o contraseña incorrectos');
+  const handleLogin = async () => {
+    setError(''); // Reset error message
+
+    if (!username || !password) {
+      setError('Por favor, rellene ambos campos.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Simulación de autenticación, reemplazar con lógica real
+      if (username === 'Cristian' && password === 'Cristian2005_05') {
+        login(); // Llamada al contexto para manejar autenticación
+        navigate('/personas'); // Redirigir al usuario
+      } else {
+        setError('Usuario o contraseña incorrectos');
+      }
+    } catch (error) {
+      setError('Ocurrió un error al intentar iniciar sesión. Inténtelo de nuevo.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -22,6 +40,7 @@ const LoginPage = () => {
     <Container>
       <LoginBox>
         <Title>Iniciar Sesión</Title>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
         <Input
           type="text"
           placeholder="Usuario"
@@ -34,7 +53,9 @@ const LoginPage = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button onClick={handleLogin}>Ingresar</Button>
+        <Button onClick={handleLogin} disabled={loading}>
+          {loading ? 'Cargando...' : 'Ingresar'}
+        </Button>
       </LoginBox>
     </Container>
   );
@@ -46,7 +67,8 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  width: 100%;
+  height: 97vh;
   background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
 `;
 
@@ -93,4 +115,15 @@ const Button = styled.button`
   &:hover {
     background-color: #1a8fd8;
   }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  margin-bottom: 20px;
+  font-size: 14px;
 `;

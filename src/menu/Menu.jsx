@@ -1,12 +1,15 @@
+// src/menu/MenuLayout.jsx
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { AiTwotoneContacts } from "react-icons/ai";
-import { ImUser, ImUserTie } from "react-icons/im";
-import { CgGirl } from "react-icons/cg";
+import { Link, useLocation } from 'react-router-dom'; 
+import { AiTwotoneContacts } from 'react-icons/ai';
+import { ImUser, ImUserTie } from 'react-icons/im';
+import { CgGirl } from 'react-icons/cg';
 import styled from 'styled-components';
 
 const MenuLayout = ({ children }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation(); 
+  const isLoginPage = location.pathname === '/login'; 
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -18,38 +21,40 @@ const MenuLayout = ({ children }) => {
 
   return (
     <Wrapper>
-      <MenuContainer $menuOpen={menuOpen}>
-        <MenuButton onClick={toggleMenu}>
-          &#9776;
-        </MenuButton>
-        {menuOpen && (
-          <Menu>
-            <MenuHeader>
-              <AiTwotoneContacts size={30} />
-              <span>Datos Escolares</span>
-              <CloseButton onClick={closeMenu}>✖</CloseButton>
-            </MenuHeader>
-            <MenuItem onClick={closeMenu}>
-              <Link to="/personas">
-                <ImUser size={20} />
-                Profesionales
-              </Link>
-            </MenuItem>
-            <MenuItem onClick={closeMenu}>
-              <Link to="/profesores">
-                <ImUserTie size={20} />
-                Profesores
-              </Link>
-            </MenuItem>
-            <MenuItem onClick={closeMenu}>
-              <Link to="/alumnos">
-                <CgGirl size={20} />
-                Alumnos
-              </Link>
-            </MenuItem>
-          </Menu>
-        )}
-      </MenuContainer>
+      {!isLoginPage && ( 
+        <MenuContainer $menuOpen={menuOpen}>
+          <MenuButton onClick={toggleMenu}>
+            &#9776;
+          </MenuButton>
+          {menuOpen && (
+            <Menu>
+              <MenuHeader>
+                <AiTwotoneContacts size={30} />
+                <span>Datos Escolares</span>
+                <CloseButton onClick={closeMenu}>✖</CloseButton>
+              </MenuHeader>
+              <MenuItem onClick={closeMenu}>
+                <Link to="/personas">
+                  <ImUser size={20} />
+                  Profesionales
+                </Link>
+              </MenuItem>
+              <MenuItem onClick={closeMenu}>
+                <Link to="/profesores">
+                  <ImUserTie size={20} />
+                  Profesores
+                </Link>
+              </MenuItem>
+              <MenuItem onClick={closeMenu}>
+                <Link to="/alumnos">
+                  <CgGirl size={20} />
+                  Alumnos
+                </Link>
+              </MenuItem>
+            </Menu>
+          )}
+        </MenuContainer>
+      )}
       <Content $menuOpen={menuOpen}>
         {children}
       </Content>
@@ -59,11 +64,10 @@ const MenuLayout = ({ children }) => {
 
 export default MenuLayout;
 
-const Wrapper = styled.div`
-`;
+const Wrapper = styled.div``;
 
 const MenuContainer = styled.div`
-  width: ${({ $menuOpen }) => ($menuOpen ? '00px' : '0')};
+  width: ${({ $menuOpen }) => ($menuOpen ? '200px' : '0')}; // Corrige el ancho del menú
   transition: width 0.3s ease;
   overflow: hidden;
   flex-direction: column;
@@ -77,8 +81,8 @@ const MenuButton = styled.button`
   border: none;
   display: flex;
   padding: 15px;
-  border-radius: 50%; 
-  width: 60px;  
+  border-radius: 50%;
+  width: 60px;
   height: 60px;
   cursor: pointer;
   margin: 20px;
@@ -110,7 +114,7 @@ const MenuHeader = styled.div`
   color: white;
   font-size: 20px;
   font-weight: bold;
-  
+
   svg {
     margin-right: 10px;
   }
