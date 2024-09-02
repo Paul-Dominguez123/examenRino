@@ -86,7 +86,7 @@ const Fondo = styled.div`
   box-sizing: border-box;
   background: linear-gradient(0deg, #80E7A2 0%, #158B7B 100%);
   width: 100%;
-  height: 97vh; 
+  height: 100vh; 
   display: flex;
   flex-direction: column;
   align-items: center;

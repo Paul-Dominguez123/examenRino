@@ -28,8 +28,14 @@ export const TablaAlumno = ({ alumnos, profesores, onEdit, onDelete }) => {
   };
 
   const obtenerNombreProfesor = (id_profesor) => {
-    const profesor = profesores.find(prof => prof.id_profesor === id_profesor);
-    return profesor ? `${profesor.nombre} ${profesor.apellido}` : 'Desconocido';
+    try {
+      if (!profesores) return 'Desconocido';
+      const profesor = profesores.find(prof => prof.id_profesor === id_profesor);
+      return profesor ? `${profesor.nombre} ${profesor.apellido}` : 'Desconocido';
+    } catch (error) {
+      console.error('Error al obtener el nombre del profesor:', error);
+      return 'Desconocido';
+    }
   };
 
   return (
@@ -88,7 +94,7 @@ const Fondo = styled.div`
   box-sizing: border-box;
   background: linear-gradient(0deg, #80E7A2 0%, #158B7B 100%);
   width: 100%;
-  height: 97vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;

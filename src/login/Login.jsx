@@ -23,7 +23,7 @@ const LoginPage = () => {
 
     try {
       // Simulación de autenticación, reemplazar con lógica real
-      if (username === 'Cristian' && password === 'Cristian2005_05') {
+      if (username === '123' && password === '123') {
         login(); // Llamada al contexto para manejar autenticación
         navigate('/personas'); // Redirigir al usuario
       } else {
@@ -68,7 +68,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 97vh;
+  height: 100%;
   background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
 `;
 
