@@ -10,14 +10,21 @@ const PrivateRoute = ({ element }) => {
   return isAuthenticated ? element : <Navigate to="/login" />;
 };
 
-const Rutas = () => (
-  <Routes>
-    <Route path="/" element={<Navigate to="/personas" />} />
-    <Route path="/login" element={<LoginPage />} />
-    <Route path="/personas" element={<PrivateRoute element={<PersonasPage />} />} />
-    <Route path="/profesores" element={<PrivateRoute element={<ProfesorPage />} />} />
-    <Route path="/alumnos" element={<PrivateRoute element={<AlumnoPage />} />} />
-  </Routes>
-);
+const Rutas = () => {
+  const { isAuthenticated } = useContext(AuthContext);
+
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={isAuthenticated ? <Navigate to="/personas" /> : <Navigate to="/login" />}
+      />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/personas" element={<PrivateRoute element={<PersonasPage />} />} />
+      <Route path="/profesores" element={<PrivateRoute element={<ProfesorPage />} />} />
+      <Route path="/alumnos" element={<PrivateRoute element={<AlumnoPage />} />} />
+    </Routes>
+  );
+};
 
 export default Rutas;

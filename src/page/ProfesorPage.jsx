@@ -3,15 +3,17 @@ import { GetProfesores } from '../Apis/Profesores/GetProfesor';
 import { PostProfesores } from '../Apis/Profesores/PostProfesor';
 import { UpdateProfesores } from '../Apis/Profesores/UpdateProfesor';
 import { DeleteProfesor } from '../Apis/Profesores/DeleteProfesor';
-import { TablaProfesor } from '../components/TablaProfesor';
+import { TablaDatos } from '../components/Tabla';
 import { FormProfesor } from '../forms/FormProfesor';
 import styled from 'styled-components';
 import { IoAddCircle } from 'react-icons/io5'; // Importa el ícono
+import Busqueda from '../components/Busqueda';
 
 export const ProfesorPage = () => {
     const [profesores, setProfesores] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [profesorEditando, setProfesorEditando] = useState(null);
+    const titulos = ["id", "nombre", "apellido", "especialidad"];
 
     useEffect(() => {
         cargarProfesores();
@@ -68,7 +70,20 @@ export const ProfesorPage = () => {
 
     return (
         <Container>
-            <TablaProfesor profesores={profesores} onEdit={handleEditClick} onDelete={handleDeleteProfesor} />
+            <Header>
+                <Titulo>LISTA DE PROFESORES</Titulo>
+                <Busqueda
+                    entity="profesores"
+                    placeholder="Buscar profesores..."
+                    data={profesores} // Pasa los datos al componente Busqueda
+                />
+            </Header>
+            <TablaDatos 
+                    titulos={titulos} 
+                    datos={profesores} 
+                    onEdit={handleEditClick} 
+                    onDelete={handleDeleteProfesor} 
+                />
             {showModal && (
                 <Modal>
                     <FormProfesor
@@ -139,5 +154,31 @@ const CloseButton = styled.button`
   
   &:hover {
     background-color: #c0392b;
+  }
+`;
+
+const Header = styled.div`
+  width: 100%;
+  position: fixed;
+  margin: 0; 
+  top: 90px;
+`;
+
+const Titulo = styled.h1`
+  font-family: 'Lao Muang Don', sans-serif;
+  color: #edf7f3;
+  font-size: 48px;
+  font-weight: 400;
+  text-align: center;
+  margin: 0; 
+  
+  @media (max-width: 768px) {
+    font-size: 36px;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 28px;
+    margin-top: 15px; 
   }
 `;

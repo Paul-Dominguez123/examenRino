@@ -1,15 +1,17 @@
-// src/menu/MenuLayout.jsx
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom'; 
+import React, { useState, useContext } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AiTwotoneContacts } from 'react-icons/ai';
 import { ImUser, ImUserTie } from 'react-icons/im';
 import { CgGirl } from 'react-icons/cg';
 import styled from 'styled-components';
+import { AuthContext } from '../login/AuthContext'; // Ajusta la ruta según tu estructura de archivos
 
 const MenuLayout = ({ children }) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const location = useLocation(); 
-  const isLoginPage = location.pathname === '/login'; 
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isLoginPage = location.pathname === '/login';
+  const { logout } = useContext(AuthContext);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -18,6 +20,14 @@ const MenuLayout = ({ children }) => {
   const closeMenu = () => {
     setMenuOpen(false);
   };
+
+  const handleLogout = () => {
+    // Elimina los datos de autenticación del almacenamiento local
+    localStorage.removeItem('isAuthenticated'); 
+    logout(); 
+    navigate('/login');
+  };
+  
 
   return (
     <Wrapper>
@@ -51,6 +61,9 @@ const MenuLayout = ({ children }) => {
                   Alumnos
                 </Link>
               </MenuItem>
+              <MenuItem onClick={handleLogout}>
+                <span>Salir</span>
+              </MenuItem>
             </Menu>
           )}
         </MenuContainer>
@@ -67,7 +80,7 @@ export default MenuLayout;
 const Wrapper = styled.div``;
 
 const MenuContainer = styled.div`
-  width: ${({ $menuOpen }) => ($menuOpen ? '200px' : '0')}; // Corrige el ancho del menú
+  width: ${({ $menuOpen }) => ($menuOpen ? '200px' : '0')}; 
   transition: width 0.3s ease;
   overflow: hidden;
   flex-direction: column;

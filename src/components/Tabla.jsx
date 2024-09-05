@@ -1,19 +1,15 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Busqueda from './Busqueda'; // Asegúrate de que la ruta sea correcta
 
-export const TablaAlumno = ({ alumnos, profesores, onEdit, onDelete }) => {
+export const TablaDatos = ({ titulos = [], datos = [], onEdit, onDelete }) => {
   const [paginaActual, setPaginaActual] = useState(1);
   const datosPorPagina = 4;
-  const [searchQuery, setSearchQuery] = useState('');
 
   const indiceUltimoDato = paginaActual * datosPorPagina;
   const indicePrimerDato = indiceUltimoDato - datosPorPagina;
-  const datosActuales = alumnos
-    .filter(alumno => alumno.nombre.toLowerCase().includes(searchQuery.toLowerCase()) || alumno.apellido.toLowerCase().includes(searchQuery.toLowerCase()))
-    .slice(indicePrimerDato, indiceUltimoDato);
+  const datosActuales = datos.slice(indicePrimerDato, indiceUltimoDato);
 
-  const totalPaginas = Math.ceil(alumnos.length / datosPorPagina);
+  const totalPaginas = Math.ceil(datos.length / datosPorPagina);
 
   const siguientePagina = () => {
     if (paginaActual < totalPaginas) {
@@ -27,49 +23,26 @@ export const TablaAlumno = ({ alumnos, profesores, onEdit, onDelete }) => {
     }
   };
 
-  const obtenerNombreProfesor = (id_profesor) => {
-    try {
-      if (!profesores) return 'Desconocido';
-      const profesor = profesores.find(prof => prof.id_profesor === id_profesor);
-      return profesor ? `${profesor.nombre} ${profesor.apellido}` : 'Desconocido';
-    } catch (error) {
-      console.error('Error al obtener el nombre del profesor:', error);
-      return 'Desconocido';
-    }
-  };
-
   return (
     <Fondo>
-      <Header>
-        <Titulo>LISTA DE ALUMNOS</Titulo>
-        <BusquedaContainer>
-          <Busqueda
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            placeholder="Buscar por Datos"
-          />
-        </BusquedaContainer>
-      </Header>
       <Tabla>
         <thead>
           <tr>
-            <Letra>ID</Letra>
-            <Letra>Nombre</Letra>
-            <Letra>Apellido</Letra>
-            <Letra>Profesor</Letra>
+            {titulos.map((titulo, index) => (
+              <Letra key={index}>{titulo}</Letra>
+            ))}
             <Letra>Acciones</Letra>
           </tr>
         </thead>
         <tbody>
-          {datosActuales.map(alumno => (
-            <tr key={alumno.id_alumno}>
-              <td>{alumno.id_alumno}</td>
-              <td>{alumno.nombre}</td>
-              <td>{alumno.apellido}</td>
-              <td>{obtenerNombreProfesor(alumno.id_profesor)}</td>
+          {datosActuales.map(dato => (
+            <tr key={dato.id}>
+              {titulos.map((titulo, index) => (
+                <td key={index}>{dato[titulo]}</td>
+              ))}
               <td>
-                <ButtonActualizar onClick={() => onEdit(alumno)}>Actualizar</ButtonActualizar>
-                <ButtonEliminar onClick={() => onDelete(alumno.id_alumno)}>Eliminar</ButtonEliminar>
+                <ButtonActualizar onClick={() => onEdit(dato)}>Actualizar</ButtonActualizar>
+                <ButtonEliminar onClick={() => onDelete(dato.id)}>Eliminar</ButtonEliminar>
               </td>
             </tr>
           ))}
@@ -88,65 +61,18 @@ export const TablaAlumno = ({ alumnos, profesores, onEdit, onDelete }) => {
   );
 };
 
-export default TablaAlumno;
+export default TablaDatos;
 
 const Fondo = styled.div`
   box-sizing: border-box;
   background: linear-gradient(0deg, #80E7A2 0%, #158B7B 100%);
-  width: 100%;
-  height: 100vh;
+  width: 100vw; /* Asegúrate de que el fondo cubra toda la vista */
+  height: 100vh; /* Asegúrate de que el fondo cubra toda la altura de la vista */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-`;
-
-const Header = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 20px; /* Espacio debajo del header para la tabla */
-`;
-
-const Titulo = styled.h1`
-  font-family: 'Lao Muang Don', sans-serif;
-  color: #ffffff;
-  font-size: 50px;
-  font-weight: 400;
-  margin: 20px 0; /* Ajusta el margen superior e inferior para mover el título hacia arriba */
-  text-align: center;
-
-  @media (max-width: 768px) {
-    font-size: 40px;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 30px;
-  }
-`;
-
-const BusquedaContainer = styled.div`
-  width: 70%;
-`;
-
-const Letra = styled.th`
-  font-size: 25px;
-  padding: 8px;
-  text-align: center;
-  background-color: #f4f4f4;
-  border-bottom: 2px solid #ddd;
-
-  @media (max-width: 768px) {
-    font-size: 20px;
-    padding: 6px;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 18px;
-    padding: 4px;
-  }
 `;
 
 const Tabla = styled.table`
@@ -249,4 +175,21 @@ const NumeroPagina = styled.div`
   padding: 5px 10px;
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
+`;
+
+const Letra = styled.th`
+  font-size: 25px;
+  padding: 12px 30px;
+  text-align: center;
+  color: #ffffff;
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+    padding: 10px 14px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 17px;
+    padding: 8px 5px;
+  }
 `;

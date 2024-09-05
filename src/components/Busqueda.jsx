@@ -1,74 +1,89 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { AiOutlineSearch } from "react-icons/ai";
-import { GetProfesores, GetAlumnos, GetPersonas } from '../apis/Busqueda/GetBusqueda';
+import { AiOutlineSearch } from 'react-icons/ai';
 
-const Busqueda = ({ entity, placeholder }) => {
+const Busqueda = ({ placeholder, data }) => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [resultados, setResultados] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
+    const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
-    const handleSearch = async () => {
-        try {
-            let resultados;
+    useEffect(() => {
+        if (data && data.length > 0) {
+            setFilteredData(data.slice(0, 5));
+        }
+    }, [data]);
 
-            switch (entity) {
-                case 'profesores':
-                    resultados = await GetProfesores(searchQuery);
-                    break;
-                case 'alumnos':
-                    resultados = await GetAlumnos(searchQuery);
-                    break;
-                case 'personas':
-                    resultados = await GetPersonas(searchQuery);
-                    break;
-                default:
-                    console.error('Entidad no válida');
-                    return;
-            }
+    const handleSearch = (query) => {
+        setSearchQuery(query);
 
-            setResultados(resultados);
-        } catch (error) {
-            console.error('Error al realizar la búsqueda', error);
+        if (query) {
+            const filtered = data.filter(item =>
+                item.id.toString().includes(query) ||
+                item.nombre.toLowerCase().includes(query.toLowerCase()) ||
+                item.apellido.toLowerCase().includes(query.toLowerCase())
+            );
+            setFilteredData(filtered.slice(0, 5));
+            setIsDropdownVisible(true);
+        } else {
+            setFilteredData(data.slice(0, 5));
+            setIsDropdownVisible(false);
         }
     };
 
+    const handleBlur = () => {
+        setTimeout(() => setIsDropdownVisible(false), 200);
+    };
+
     return (
-        <div>
+        <Wrapper>
             <SearchContainer>
                 <SearchInput
                     type="text"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => handleSearch(e.target.value)}
                     placeholder={placeholder || 'Buscar...'}
+                    onBlur={handleBlur}
+                    onFocus={() => setIsDropdownVisible(true)}
                 />
-                <SearchButton onClick={handleSearch}>
+                <SearchButton onClick={() => handleSearch(searchQuery)}>
                     <AiOutlineSearch />
                 </SearchButton>
+                {isDropdownVisible && filteredData.length > 0 && (
+                    <Dropdown>
+                        {filteredData.map((item, index) => (
+                            <DropdownItem key={index}>
+                                {`${item.id} - ${item.nombre} ${item.apellido}`}
+                            </DropdownItem>
+                        ))}
+                    </Dropdown>
+                )}
             </SearchContainer>
-            <ResultsContainer>
-                {resultados.map((resultado, index) => (
-                    <ResultadoItem key={index}>
-                        {JSON.stringify(resultado)}
-                    </ResultadoItem>
-                ))}
-            </ResultsContainer>
-        </div>
+        </Wrapper>
     );
 };
 
 export default Busqueda;
 
+const Wrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    height: 15vh;
+    width: 100%;
+`;
+
 const SearchContainer = styled.div`
     display: flex;
     align-items: center;
-    margin: 20px;
+    margin: 20px 0;
+    width: 100%;
+    max-width: 400px;
+    position: relative;
 `;
 
 const SearchInput = styled.input`
     width: 100%;
-    max-width: 300px;
     padding: 10px;
-    border-radius: 4px;
+    border-radius: 4px 0 0 4px;
     border: 1px solid #ccc;
     font-size: 16px;
 
@@ -81,9 +96,8 @@ const SearchInput = styled.input`
 const SearchButton = styled.button`
     background-color: #a2d9a2;
     border: none;
-    border-radius: 4px;
+    border-radius: 0 4px 4px 0;
     padding: 10px;
-    margin-left: 10px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -99,15 +113,27 @@ const SearchButton = styled.button`
     }
 `;
 
-const ResultsContainer = styled.div`
-    margin-top: 20px;
-    width: 100%;
+const Dropdown = styled.div`
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
 `;
 
-const ResultadoItem = styled.div`
+const DropdownItem = styled.div`
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    background-color: #f9f9f9;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #f0f0f0;
+    }
+
+    &:last-child {
+        border-bottom: none;
+    }
 `;

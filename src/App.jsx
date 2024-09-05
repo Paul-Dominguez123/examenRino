@@ -1,10 +1,9 @@
-// src/App.jsx
 import React from 'react';
 import styled from 'styled-components';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { AuthProvider } from './login/AuthContext'; // Importa AuthProvider
+import { AuthProvider } from './login/AuthContext'; 
 import Routes from './routes/Routes';
-import MenuLayout from './menu/Menu';
+import MenuLayout from './components/Menu';
 
 const App = () => {
   return (
@@ -22,6 +21,4 @@ const App = () => {
 
 export default App;
 
-const Div = styled.div`
-
-`;
+const Div = styled.div``;

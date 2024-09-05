@@ -1,17 +1,20 @@
-// src/routes/Routes.jsx
-import React, { useContext } from 'react';
-import { Route, Navigate } from 'react-router-dom';
-import { AuthContext } from './AuthContext'; 
-
-const PrivateRoute = ({ element: Element, ...rest }) => {
-  const { isAuthenticated } = useContext(AuthContext);
-
-  return (
-    <Route
-      {...rest}
-      element={isAuthenticated ? Element : <Navigate to="/login" />}
-    />
-  );
-};
-
-export default PrivateRoute;
+const AuthProvider = ({ children }) => {
+    const [isAuthenticated, setIsAuthenticated] = useState(() => {
+      return localStorage.getItem('isAuthenticated') === 'true';
+    });
+  
+    useEffect(() => {
+      // Guardar el estado de autenticación en localStorage
+      localStorage.setItem('isAuthenticated', isAuthenticated);
+    }, [isAuthenticated]);
+  
+    const login = () => setIsAuthenticated(true);
+    const logout = () => setIsAuthenticated(false);
+  
+    return (
+      <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+        {children}
+      </AuthContext.Provider>
+    );
+  };
+  

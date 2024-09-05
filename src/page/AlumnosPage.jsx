@@ -3,15 +3,18 @@ import { GetAlumnos } from '../Apis/Alumnos/GetAlumnos';
 import { PostAlumnos } from '../Apis/Alumnos/PostAlumnos';
 import { UpdateAlumnos } from '../Apis/Alumnos/UpdateAlumnos';
 import { DeleteAlumnos } from '../Apis/Alumnos/DeleteAlumnos';
-import { TablaAlumno } from '../components/TablaAlumnos';
+import { TablaDatos } from '../components/Tabla';
 import { FormAlumno } from '../forms/FormAlumno';
 import styled from 'styled-components';
 import { IoAddCircle } from 'react-icons/io5'; // Importa el ícono
+import Busqueda from '../components/Busqueda';
+
 
 export const AlumnoPage = () => {
     const [alumnos, setAlumnos] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [alumnoEditando, setAlumnoEditando] = useState(null);
+    const titulos = ["id", "nombre", "apellido", "profesor"];
 
     useEffect(() => {
         cargarAlumnos();
@@ -68,7 +71,20 @@ export const AlumnoPage = () => {
 
     return (
         <Container>
-            <TablaAlumno alumnos={alumnos} onEdit={handleEditClick} onDelete={handleDeleteAlumno} />
+            <Header>
+                <Titulo>LISTA DE ALUMNOS</Titulo>
+                <Busqueda
+                    entity="alumnos"
+                    placeholder="Buscar alumno..."
+                    data={alumnos} // Pasa los datos al componente Busqueda
+                />
+            </Header>
+            <TablaDatos 
+                    titulos={titulos} 
+                    datos={alumnos} 
+                    onEdit={handleEditClick} 
+                    onDelete={handleDeleteAlumno} 
+                />
             {showModal && (
                 <Modal>
                     <FormAlumno
@@ -94,7 +110,7 @@ const Container = styled.div`
 `;
 
 const AddButton = styled.button`
-  background-color: #20cc84;
+  background-color: #20cc84; /* Color de fondo verde */
   color: white;
   border: none;
   padding: 10px;
@@ -108,7 +124,7 @@ const AddButton = styled.button`
   justify-content: center;
   
   &:hover {
-    background-color: #19debc;
+    background-color: #19debc; /* Color de fondo verde claro al pasar el cursor */
   }
 
   svg {
@@ -128,7 +144,7 @@ const Modal = styled.div`
 `;
 
 const CloseButton = styled.button`
-  background-color: #21d98f;
+  background-color: #e74c3c;
   color: white;
   font-size: 16px;
   border: none;
@@ -139,5 +155,31 @@ const CloseButton = styled.button`
   
   &:hover {
     background-color: #c0392b;
+  }
+`;
+
+const Header = styled.div`
+  width: 100%;
+  position: fixed;
+  margin: 0; 
+  top: 90px;
+`;
+
+const Titulo = styled.h1`
+  font-family: 'Lao Muang Don', sans-serif;
+  color: #edf7f3;
+  font-size: 48px;
+  font-weight: 400;
+  text-align: center;
+  margin: 0; 
+  
+  @media (max-width: 768px) {
+    font-size: 36px;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 28px;
+    margin-top: 15px; 
   }
 `;

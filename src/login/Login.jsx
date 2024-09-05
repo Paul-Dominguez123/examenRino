@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import {AuthContext} from './AuthContext';
+import { AuthContext } from './AuthContext';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -63,6 +63,7 @@ const LoginPage = () => {
 
 export default LoginPage;
 
+// Styled-components definitions
 const Container = styled.div`
   display: flex;
   justify-content: center;

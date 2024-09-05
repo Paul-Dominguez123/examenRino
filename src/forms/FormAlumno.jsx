@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaSpinner } from 'react-icons/fa'; // Importar ícono de carga
 
-export const FormAlumno = ({ alumnoInicial, onSubmit }) => {
+export const FormAlumno = ({ alumnoInicial, onSubmit, profesores }) => {
     const [alumno, setAlumno] = useState({
         nombre: '',
         apellido: '',
@@ -34,7 +34,7 @@ export const FormAlumno = ({ alumnoInicial, onSubmit }) => {
         if (!alumno.nombre || !alumno.apellido || !alumno.id_profesor) {
             setAlerta({
                 tipo: 'error',
-                mensaje: `Faltan campos: ${!alumno.nombre ? 'Nombre' : ''}${!alumno.nombre && !alumno.apellido ? ', ' : ''}${!alumno.apellido ? 'Apellido' : ''}${(!alumno.nombre || !alumno.apellido) && !alumno.id_profesor ? ', ' : ''}${!alumno.id_profesor ? 'ID Profesor' : ''}.`
+                mensaje: `Faltan campos: ${!alumno.nombre ? 'Nombre' : ''}${!alumno.nombre && !alumno.apellido ? ', ' : ''}${!alumno.apellido ? 'Apellido' : ''}${(!alumno.nombre || !alumno.apellido) && !alumno.id_profesor ? ', ' : ''}${!alumno.id_profesor ? 'Profesor' : ''}.`
             });
             setCargando(false); // Ocultar indicador de carga
             return;
@@ -87,13 +87,22 @@ export const FormAlumno = ({ alumnoInicial, onSubmit }) => {
                 onChange={handleChange}
                 placeholder="Apellido"
             />
-            <Input
-                type="text"
+            <Select
                 name="id_profesor"
                 value={alumno.id_profesor}
                 onChange={handleChange}
-                placeholder="ID Profesor"
-            />
+            >
+                <option value="">Seleccione un profesor</option>
+            {Array.isArray(profesores) && profesores.length > 0 ? (
+                profesores.map(profesor => (
+                    <option key={profesor.id} value={profesor.id}>
+                {profesor.nombre} {profesor.apellido}
+    </option>
+  ))
+) : (
+  <option disabled>Cargando profesores...</option>
+)}  
+            </Select>
             <Button type="submit" disabled={cargando}>
                 {cargando ? <FaSpinner className="spinner" /> : 'Guardar'}
             </Button>
@@ -135,6 +144,20 @@ const Input = styled.input`
     &::placeholder {
         color: #888;
     }
+
+    &:focus {
+        border-color: #158B7B;
+        outline: none;
+    }
+`;
+
+const Select = styled.select`
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
 
     &:focus {
         border-color: #158B7B;

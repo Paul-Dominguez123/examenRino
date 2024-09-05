@@ -3,15 +3,19 @@ import { GetPersonas } from '../Apis/Personas/GetPersonas';
 import { PostPersonas } from '../Apis/Personas/PostPersonas';
 import { UpdatePersonas } from '../Apis/Personas/UpdatePersonas';
 import { DeletePersona } from '../apis/Personas/DeletePersona';
-import { TablaPersonas } from '../components/TablaPersonas';
+import { TablaDatos } from '../components/Tabla';
 import { FormPersona } from '../forms/FormPersona';
 import styled from 'styled-components';
 import { IoAddCircle } from 'react-icons/io5'; // Importa el ícono
+import Busqueda from '../components/Busqueda';
 
 export const PersonasPage = () => {
     const [personas, setPersonas] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [personaEditando, setPersonaEditando] = useState(null);
+
+
+    const titulos = ["id", "nombre", "apellido", "carrera"];
 
     useEffect(() => {
         cargarPersonas();
@@ -68,7 +72,20 @@ export const PersonasPage = () => {
 
     return (
         <Container>
-            <TablaPersonas personas={personas} onEdit={handleEditClick} onDelete={handleDeletePersona} />
+            <Header>
+                <Titulo>LISTA DE PROFECIONALES</Titulo>
+                <Busqueda
+                    entity="personas"
+                    placeholder="Buscar profecionales..."
+                    data={personas} // Pasa los datos al componente Busqueda
+                />
+            </Header>
+               <TablaDatos 
+                    titulos={titulos} 
+                    datos={personas} 
+                    onEdit={handleEditClick} 
+                    onDelete={handleDeletePersona} 
+                />
             {showModal && (
                 <Modal>
                     <FormPersona
@@ -139,5 +156,31 @@ const CloseButton = styled.button`
   
   &:hover {
     background-color: #c0392b;
+  }
+`;
+
+const Header = styled.div`
+  width: 100%;
+  position: fixed;
+  margin: 0; 
+  top: 90px;
+`;
+
+const Titulo = styled.h1`
+  font-family: 'Lao Muang Don', sans-serif;
+  color: #edf7f3;
+  font-size: 48px;
+  font-weight: 400;
+  text-align: center;
+  margin: 0; 
+  
+  @media (max-width: 768px) {
+    font-size: 36px;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 28px;
+    margin-top: 15px; 
   }
 `;
