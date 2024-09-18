@@ -1,24 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import { GetAlumnos } from '../Apis/Alumnos/GetAlumnos';
-import { PostAlumnos } from '../Apis/Alumnos/PostAlumnos';
-import { UpdateAlumnos } from '../Apis/Alumnos/UpdateAlumnos';
-import { DeleteAlumnos } from '../Apis/Alumnos/DeleteAlumnos';
+import { GetAlumnos } from '../apis/Alumnos/GetAlumnos';
+import { GetProfesores } from '../apis/Profesores/GetProfesor'; 
+import { PostAlumnos } from '../apis/Alumnos/PostAlumnos';
+import { UpdateAlumnos } from '../apis/Alumnos/UpdateAlumnos';
+import { DeleteAlumnos } from '../apis/Alumnos/DeleteAlumnos';
+import { SearchAlumnos } from '../apis/Alumnos/SerchAlumnos';
 import { TablaDatos } from '../components/Tabla';
 import { FormAlumno } from '../forms/FormAlumno';
 import styled from 'styled-components';
-import { IoAddCircle } from 'react-icons/io5'; // Importa el ícono
+import { IoAddCircle } from 'react-icons/io5'; 
 import Busqueda from '../components/Busqueda';
-
 
 export const AlumnoPage = () => {
     const [alumnos, setAlumnos] = useState([]);
+    const [profesores, setProfesores] = useState([]); 
+    const [filteredAlumnos, setFilteredAlumnos] = useState([]); 
     const [showModal, setShowModal] = useState(false);
     const [alumnoEditando, setAlumnoEditando] = useState(null);
-    const titulos = ["id", "nombre", "apellido", "profesor"];
+    const titulos = ["id_alumno", "nombre", "apellido", "id_profesor"]; 
+
+    const titleMapping = {
+        id_alumno: "ID Alumno",
+        nombre: "Nombre",
+        apellido: "Apellido",
+        id_profesor: "Profesor", 
+    };
 
     useEffect(() => {
         cargarAlumnos();
+        cargarProfesores();
     }, []);
+
+    useEffect(() => {
+        // Inicialmente, muestra todos los alumnos
+        setFilteredAlumnos(alumnos); 
+    }, [alumnos]);
 
     const cargarAlumnos = async () => {
         try {
@@ -26,6 +42,15 @@ export const AlumnoPage = () => {
             setAlumnos(data);
         } catch (error) {
             console.error("Error loading alumnos:", error);
+        }
+    };
+
+    const cargarProfesores = async () => {
+        try {
+            const data = await GetProfesores();
+            setProfesores(data);
+        } catch (error) {
+            console.error("Error loading profesores:", error);
         }
     };
 
@@ -68,6 +93,14 @@ export const AlumnoPage = () => {
         setAlumnoEditando(null);
         setShowModal(true);
     };
+    const handleSearch = async (query) => {
+        try {
+            const data = await SearchAlumnos(query); 
+            setFilteredAlumnos(data); 
+        } catch (error) {
+            console.error("Error searching alumnos:", error);
+        }
+    };
 
     return (
         <Container>
@@ -75,21 +108,23 @@ export const AlumnoPage = () => {
                 <Titulo>LISTA DE ALUMNOS</Titulo>
                 <Busqueda
                     entity="alumnos"
-                    placeholder="Buscar alumno..."
-                    data={alumnos} // Pasa los datos al componente Busqueda
+                    placeholder="Buscar alumnos..."
+                    onSearch={(query) => handleSearch(query)}
                 />
             </Header>
             <TablaDatos 
-                    titulos={titulos} 
-                    datos={alumnos} 
-                    onEdit={handleEditClick} 
-                    onDelete={handleDeleteAlumno} 
-                />
+                titulos={titulos} 
+                datos={filteredAlumnos}
+                onEdit={handleEditClick} 
+                onDelete={handleDeleteAlumno} 
+                profesores={profesores} // Pasa los profesores aquí
+            />
             {showModal && (
                 <Modal>
                     <FormAlumno
                         alumnoInicial={alumnoEditando}
                         onSubmit={alumnoEditando ? handleUpdateAlumno : handleAddAlumno}
+                        profesores={profesores}
                     />
                     <CloseButton onClick={() => setShowModal(false)}>Cerrar</CloseButton>
                 </Modal>

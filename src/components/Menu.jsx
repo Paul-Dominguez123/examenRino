@@ -85,6 +85,15 @@ const MenuContainer = styled.div`
   overflow: hidden;
   flex-direction: column;
   align-items: flex-start;
+  position: fixed; 
+  top: 0;
+  left: 0;
+  height: 100vh; /* Asegura que el menú cubra toda la altura de la pantalla */
+  z-index: 1000; /* Asegura que el menú esté por encima del contenido */
+  @media (max-width: 880px) {
+    width: ${({ $menuOpen }) => ($menuOpen ? '100px' : '0')}; 
+    height: 50vh;
+  }
 `;
 
 const MenuButton = styled.button`
@@ -116,6 +125,12 @@ const Menu = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   overflow: hidden;
   flex-direction: column;
+    @media (max-width: 700px) {
+    height: 40vh;
+      top: 10vh;
+      left: 10vh;
+  }
+  
 `;
 
 const MenuHeader = styled.div`
@@ -178,4 +193,7 @@ const Content = styled.div`
   justify-content: center;
   margin-left: ${({ $menuOpen }) => ($menuOpen ? '200px' : '0')};
   transition: margin-left 0.3s ease;
+    @media (max-width: 700px) {
+    margin-left: 0; /* Ajusta el margen para pantallas pequeñas */
+  }
 `;

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { GetProfesores } from '../Apis/Profesores/GetProfesor';
+import { GetProfesores } from '../apis/Profesores/GetProfesor';
 import { PostProfesores } from '../Apis/Profesores/PostProfesor';
 import { UpdateProfesores } from '../Apis/Profesores/UpdateProfesor';
 import { DeleteProfesor } from '../Apis/Profesores/DeleteProfesor';
+import { SearchProfesores } from '../Apis/Profesores/SerchProfesores';
 import { TablaDatos } from '../components/Tabla';
 import { FormProfesor } from '../forms/FormProfesor';
 import styled from 'styled-components';
@@ -11,13 +12,19 @@ import Busqueda from '../components/Busqueda';
 
 export const ProfesorPage = () => {
     const [profesores, setProfesores] = useState([]);
+    const [filteredProfesores, setFilteredProfesores] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [profesorEditando, setProfesorEditando] = useState(null);
-    const titulos = ["id", "nombre", "apellido", "especialidad"];
+    const titulos = ["id_profesor", "nombre", "apellido", "especialidad"];
 
     useEffect(() => {
         cargarProfesores();
     }, []);
+
+    useEffect(() => {
+        // Inicialmente, muestra todos los profesores
+        setFilteredProfesores(profesores);
+    }, [profesores]);
 
     const cargarProfesores = async () => {
         try {
@@ -68,6 +75,14 @@ export const ProfesorPage = () => {
         setShowModal(true);
     };
 
+    const handleSearch = async (query) => {
+        try {
+            const data = await SearchProfesores(query); 
+            setFilteredProfesores(data); 
+        } catch (error) {
+            console.error("Error searching profesores:", error);
+        }
+    };
     return (
         <Container>
             <Header>
@@ -75,15 +90,15 @@ export const ProfesorPage = () => {
                 <Busqueda
                     entity="profesores"
                     placeholder="Buscar profesores..."
-                    data={profesores} // Pasa los datos al componente Busqueda
+                    onSearch={(query) => handleSearch(query)} // Envía la consulta a la API
                 />
             </Header>
             <TablaDatos 
-                    titulos={titulos} 
-                    datos={profesores} 
-                    onEdit={handleEditClick} 
-                    onDelete={handleDeleteProfesor} 
-                />
+                titulos={titulos} 
+                datos={filteredProfesores} // Usa los datos filtrados
+                onEdit={handleEditClick} 
+                onDelete={handleDeleteProfesor} 
+            />
             {showModal && (
                 <Modal>
                     <FormProfesor

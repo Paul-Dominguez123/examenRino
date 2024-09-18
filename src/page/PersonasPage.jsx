@@ -3,6 +3,7 @@ import { GetPersonas } from '../Apis/Personas/GetPersonas';
 import { PostPersonas } from '../Apis/Personas/PostPersonas';
 import { UpdatePersonas } from '../Apis/Personas/UpdatePersonas';
 import { DeletePersona } from '../apis/Personas/DeletePersona';
+import { SearchPersonas } from '../apis/Personas/SerchPersonas';
 import { TablaDatos } from '../components/Tabla';
 import { FormPersona } from '../forms/FormPersona';
 import styled from 'styled-components';
@@ -11,15 +12,20 @@ import Busqueda from '../components/Busqueda';
 
 export const PersonasPage = () => {
     const [personas, setPersonas] = useState([]);
+    const [filteredPersonas, setFilteredPersonas] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [personaEditando, setPersonaEditando] = useState(null);
-
 
     const titulos = ["id", "nombre", "apellido", "carrera"];
 
     useEffect(() => {
         cargarPersonas();
     }, []);
+
+    useEffect(() => {
+        // Inicialmente, muestra todas las personas
+        setFilteredPersonas(personas);
+    }, [personas]);
 
     const cargarPersonas = async () => {
         try {
@@ -70,22 +76,31 @@ export const PersonasPage = () => {
         setShowModal(true);
     };
 
+    const handleSearch = async (query) => {
+        try {
+            const data = await SearchPersonas(query); 
+            setFilteredPersonas(data); 
+        } catch (error) {
+            console.error("Error searching personas:", error);
+        }
+    };
+
     return (
         <Container>
             <Header>
-                <Titulo>LISTA DE PROFECIONALES</Titulo>
+                <Titulo>LISTA DE PROFESIONALES</Titulo>
                 <Busqueda
                     entity="personas"
-                    placeholder="Buscar profecionales..."
-                    data={personas} // Pasa los datos al componente Busqueda
+                    placeholder="Buscar personas..."
+                    onSearch={(query) => handleSearch(query)}
                 />
             </Header>
-               <TablaDatos 
-                    titulos={titulos} 
-                    datos={personas} 
-                    onEdit={handleEditClick} 
-                    onDelete={handleDeletePersona} 
-                />
+            <TablaDatos 
+                titulos={titulos} 
+                datos={filteredPersonas} 
+                onEdit={handleEditClick} 
+                onDelete={handleDeletePersona} 
+            />
             {showModal && (
                 <Modal>
                     <FormPersona
@@ -162,8 +177,8 @@ const CloseButton = styled.button`
 const Header = styled.div`
   width: 100%;
   position: fixed;
-  margin: 0; 
   top: 90px;
+
 `;
 
 const Titulo = styled.h1`

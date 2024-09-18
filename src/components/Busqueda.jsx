@@ -1,37 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { AiOutlineSearch } from 'react-icons/ai';
 
-const Busqueda = ({ placeholder, data }) => {
+const Busqueda = ({ placeholder, onSearch }) => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [filteredData, setFilteredData] = useState([]);
-    const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        if (data && data.length > 0) {
-            setFilteredData(data.slice(0, 5));
-        }
-    }, [data]);
-
-    const handleSearch = (query) => {
-        setSearchQuery(query);
-
-        if (query) {
-            const filtered = data.filter(item =>
-                item.id.toString().includes(query) ||
-                item.nombre.toLowerCase().includes(query.toLowerCase()) ||
-                item.apellido.toLowerCase().includes(query.toLowerCase())
-            );
-            setFilteredData(filtered.slice(0, 5));
-            setIsDropdownVisible(true);
-        } else {
-            setFilteredData(data.slice(0, 5));
-            setIsDropdownVisible(false);
-        }
+    // Manejar el cambio en el input
+    const handleChange = (e) => {
+        setSearchQuery(e.target.value);
     };
 
-    const handleBlur = () => {
-        setTimeout(() => setIsDropdownVisible(false), 200);
+    // Manejar la búsqueda cuando se haga clic en el botón de búsqueda
+    const handleSearch = async () => {
+        setLoading(true);
+        try {
+            // La función `onSearch` debe estar preparada para recibir `searchQuery`
+            const filteredData = await onSearch(searchQuery);
+            // Aquí puedes manejar el resultado filtrado si es necesario
+        } catch (error) {
+            console.error('Error during search:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -40,23 +31,12 @@ const Busqueda = ({ placeholder, data }) => {
                 <SearchInput
                     type="text"
                     value={searchQuery}
-                    onChange={(e) => handleSearch(e.target.value)}
+                    onChange={handleChange}
                     placeholder={placeholder || 'Buscar...'}
-                    onBlur={handleBlur}
-                    onFocus={() => setIsDropdownVisible(true)}
                 />
-                <SearchButton onClick={() => handleSearch(searchQuery)}>
-                    <AiOutlineSearch />
+               <SearchButton onClick={handleSearch} disabled={loading || !searchQuery.trim()}>
+                {loading ? 'Buscando...' : <AiOutlineSearch />}
                 </SearchButton>
-                {isDropdownVisible && filteredData.length > 0 && (
-                    <Dropdown>
-                        {filteredData.map((item, index) => (
-                            <DropdownItem key={index}>
-                                {`${item.id} - ${item.nombre} ${item.apellido}`}
-                            </DropdownItem>
-                        ))}
-                    </Dropdown>
-                )}
             </SearchContainer>
         </Wrapper>
     );
@@ -65,19 +45,21 @@ const Busqueda = ({ placeholder, data }) => {
 export default Busqueda;
 
 const Wrapper = styled.div`
+    width: 100%;
     display: flex;
     justify-content: center;
-    height: 15vh;
-    width: 100%;
+    margin-bottom: 0px;
+    margin-top: 20px;
+    z-index: 10;
 `;
 
 const SearchContainer = styled.div`
     display: flex;
     align-items: center;
-    margin: 20px 0;
     width: 100%;
     max-width: 400px;
     position: relative;
+ 
 `;
 
 const SearchInput = styled.input`
@@ -111,29 +93,9 @@ const SearchButton = styled.button`
     &:hover {
         background-color: #8ccf8c;
     }
-`;
 
-const Dropdown = styled.div`
-    top: 100%;
-    left: 0;
-    right: 0;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 0 0 4px 4px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-`;
-
-const DropdownItem = styled.div`
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-    cursor: pointer;
-
-    &:hover {
-        background-color: #f0f0f0;
-    }
-
-    &:last-child {
-        border-bottom: none;
+    &:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
     }
 `;

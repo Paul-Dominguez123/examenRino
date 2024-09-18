@@ -93,15 +93,15 @@ export const FormAlumno = ({ alumnoInicial, onSubmit, profesores }) => {
                 onChange={handleChange}
             >
                 <option value="">Seleccione un profesor</option>
-            {Array.isArray(profesores) && profesores.length > 0 ? (
-                profesores.map(profesor => (
-                    <option key={profesor.id} value={profesor.id}>
-                {profesor.nombre} {profesor.apellido}
-    </option>
-  ))
-) : (
-  <option disabled>Cargando profesores...</option>
-)}  
+                {Array.isArray(profesores) && profesores.length > 0 ? (
+                    profesores.map(profesor => (
+                        <option key={profesor.id_profesor} value={profesor.id_profesor}>
+                            {profesor.nombre} {/* Solo mostrar el nombre */}
+                        </option>
+                    ))
+                ) : (
+                    <option disabled>Cargando profesores...</option>
+                )}
             </Select>
             <Button type="submit" disabled={cargando}>
                 {cargando ? <FaSpinner className="spinner" /> : 'Guardar'}
