@@ -7,6 +7,14 @@ export const TablaDatos = ({ titulos = [], datos = [], onEdit, onDelete, profeso
     const [paginaActual, setPaginaActual] = useState(1);
     const datosPorPagina = 4;
 
+    // Mapeo de títulos para mostrar nombres más descriptivos
+    const titleMapping = {
+        id_alumno: "ID Alumno",
+        nombre: "Nombre",
+        apellido: "Apellido",
+        id_profesor: "Profesor", 
+    };
+
     // Función para obtener el nombre del profesor basado en su id
     const obtenerNombreProfesor = (id_profesor) => {
         const profesor = profesores.find(p => p.id_profesor === id_profesor);
@@ -41,7 +49,9 @@ export const TablaDatos = ({ titulos = [], datos = [], onEdit, onDelete, profeso
                     <thead>
                         <tr>
                             {titulos.map((titulo, index) => (
-                                <Letra key={index}>{titulo}</Letra>
+                                <Letra key={index}>
+                                    {titleMapping[titulo] || titulo}
+                                </Letra>
                             ))}
                             <Letra>Acciones</Letra>
                         </tr>
@@ -81,6 +91,7 @@ export const TablaDatos = ({ titulos = [], datos = [], onEdit, onDelete, profeso
 };
 
 export default TablaDatos;
+
 
 const Fondo = styled.div`
   box-sizing: border-box;

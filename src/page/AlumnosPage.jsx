@@ -19,12 +19,6 @@ export const AlumnoPage = () => {
     const [alumnoEditando, setAlumnoEditando] = useState(null);
     const titulos = ["id_alumno", "nombre", "apellido", "id_profesor"]; 
 
-    const titleMapping = {
-        id_alumno: "ID Alumno",
-        nombre: "Nombre",
-        apellido: "Apellido",
-        id_profesor: "Profesor", 
-    };
 
     useEffect(() => {
         cargarAlumnos();
